@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User Dashboard - IT Help Desk</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <h1>IT Help Desk</h1>
+
+    <h2>User Dashboard</h2>
+
+    <div class="dashboard-menu">
+
+        <button onclick="window.location.href='/create-ticket'">
+            Create New Ticket
+        </button>
+
+        <button onclick="loadTickets()">
+            My Tickets
+        </button>
+
+        <button onclick="logout()">
+            Logout
+        </button>
+
+    </div>
+
+    <h3>My Tickets</h3>
+
+    <table border="1" width="100%">
+
+        <thead>
+            <tr>
+                <th>Ticket ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Resolution</th>
+            </tr>
+        </thead>
+
+        <tbody id="ticketBody">
+        </tbody>
+
+    </table>
+
+    <p id="message"></p>
+
+</div>
+
+
+<script>
+
+async function loadTickets() {
+
+    const response = await fetch("/api/my-tickets");
+
+    const data = await response.json();
+
+    const body = document.getElementById("ticketBody");
+
+    body.innerHTML = "";
+
+    if (!response.ok) {
+
+        document.getElementById("message").textContent =
+            data.error;
+
+        return;
+    }
+
+    if (data.length === 0) {
+
+        document.getElementById("message").textContent =
+            "You have not created any tickets yet.";
+
+        return;
+    }
+
+    document.getElementById("message").textContent = "";
+
+    data.forEach(ticket => {
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${ticket.id}</td>
+            <td>${ticket.title}</td>
+            <td>${ticket.category}</td>
+            <td>${ticket.priority}</td>
+            <td>${ticket.status}</td>
+            <td>${ticket.created_at}</td>
+            <td>${ticket.resolution || "Not resolved yet"}</td>
+        `;
+
+        body.appendChild(row);
+
+    });
+}
+
+
+async function logout() {
+
+    await fetch("/api/logout", {
+        method: "POST"
+    });
+
+    window.location.href = "/login";
+}
+
+
+// Automatically load tickets when dashboard opens
+loadTickets();
+
+</script>
+
+</body>
+
+</html>

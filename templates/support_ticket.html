@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Ticket Details - IT Help Desk</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <h1>IT Help Desk</h1>
+
+    <h2>Ticket Details</h2>
+
+    <div id="ticketDetails">
+
+        <p>Loading ticket...</p>
+
+    </div>
+
+    <hr>
+
+    <h3>Update Status</h3>
+
+    <select id="status">
+
+        <option value="Assigned">Assigned</option>
+
+        <option value="In Progress">
+            In Progress
+        </option>
+
+        <option value="Resolved">
+            Resolved
+        </option>
+
+    </select>
+
+    <button onclick="updateStatus()">
+        Update Status
+    </button>
+
+    <h3>Resolution</h3>
+
+    <textarea
+        id="resolution"
+        rows="5"
+        placeholder="Enter resolution details..."
+    ></textarea>
+
+    <br>
+
+    <button onclick="resolveTicket()">
+        Resolve Ticket
+    </button>
+
+    <br>
+
+    <button onclick="window.location.href='/support-dashboard'">
+        Back to Dashboard
+    </button>
+
+    <p id="message"></p>
+
+</div>
+
+
+<script>
+
+const ticketId = {{ ticket_id }};
+
+
+async function loadTicket() {
+
+    const response =
+        await fetch("/api/tickets/" + ticketId);
+
+    const ticket =
+        await response.json();
+
+    if (!response.ok) {
+
+        document.getElementById("ticketDetails")
+            .innerHTML =
+            `<p>${ticket.error}</p>`;
+
+        return;
+    }
+
+    document.getElementById("ticketDetails").innerHTML = `
+
+        <p>
+            <strong>Ticket ID:</strong>
+            ${ticket.id}
+        </p>
+
+        <p>
+            <strong>Title:</strong>
+            ${ticket.title}
+        </p>
+
+        <p>
+            <strong>Description:</strong>
+            ${ticket.description}
+        </p>
+
+        <p>
+            <strong>Category:</strong>
+            ${ticket.category}
+        </p>
+
+        <p>
+            <strong>Priority:</strong>
+            ${ticket.priority}
+        </p>
+
+        <p>
+            <strong>Status:</strong>
+            ${ticket.status}
+        </p>
+
+        <p>
+            <strong>Created:</strong>
+            ${ticket.created_at}
+        </p>
+
+        <p>
+            <strong>Resolution:</strong>
+            ${ticket.resolution || "Not resolved yet"}
+        </p>
+
+    `;
+
+    document.getElementById("status").value =
+        ticket.status;
+}
+
+
+async function updateStatus() {
+
+    const status =
+        document.getElementById("status").value;
+
+    const response = await fetch(
+        "/api/tickets/" + ticketId + "/status",
+        {
+            method: "PUT",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                status: status
+            })
+        }
+    );
+
+    const data =
+        await response.json();
+
+    document.getElementById("message").textContent =
+        data.message || data.error;
+
+    if (response.ok) {
+        loadTicket();
+    }
+}
+
+
+async function resolveTicket() {
+
+    const resolution =
+        document.getElementById("resolution").value;
+
+    if (!resolution.trim()) {
+
+        document.getElementById("message").textContent =
+            "Please enter resolution details.";
+
+        return;
+    }
+
+    const response = await fetch(
+        "/api/tickets/" + ticketId + "/resolve",
+        {
+            method: "PUT",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                resolution: resolution
+            })
+        }
+    );
+
+    const data =
+        await response.json();
+
+    document.getElementById("message").textContent =
+        data.message || data.error;
+
+    if (response.ok) {
+        loadTicket();
+    }
+}
+
+
+loadTicket();
+
+</script>
+
+</body>
+
+</html>

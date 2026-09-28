@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin Dashboard - IT Help Desk</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard-header">
+    <div>
+        <h1>IT Help Desk</h1>
+        <p>Admin Dashboard · Manage and assign support tickets</p>
+    </div>
+
+    <button class="btn-danger" onclick="logout()">
+        Logout
+    </button>
+</div>
+<div class="filters">
+
+    <input
+        type="text"
+        id="search"
+        placeholder="Search by title"
+    >
+
+    <select id="category">
+        <option value="">All Categories</option>
+        <option value="Hardware">Hardware</option>
+        <option value="Software">Software</option>
+        <option value="Network">Network</option>
+        <option value="Account">Account</option>
+        <option value="Other">Other</option>
+    </select>
+
+    <select id="priority">
+        <option value="">All Priorities</option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+        <option value="Critical">Critical</option>
+    </select>
+
+    <select id="status">
+        <option value="">All Statuses</option>
+        <option value="Open">Open</option>
+        <option value="Assigned">Assigned</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Resolved">Resolved</option>
+        <option value="Closed">Closed</option>
+    </select>
+
+    <button onclick="loadTickets()">Apply Filters</button>
+
+ </div>
+    <h3>All Tickets</h3>
+ <div class="table-container">
+    <table border="1" width="100%">
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Assigned To</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody id="ticketBody">
+        </tbody>
+
+    </table>
+    </div>
+    <p id="message"></p>
+
+</div>
+
+
+<script>
+function statusBadge(status) {
+    const classes = {
+        "Open": "status-open",
+        "Assigned": "status-assigned",
+        "In Progress": "status-progress",
+        "Resolved": "status-resolved",
+        "Closed": "status-closed"
+    };
+
+    return `
+        <span class="status ${classes[status] || ""}">
+            ${status}
+        </span>
+    `;
+}
+
+function priorityBadge(priority) {
+    const classes = {
+        "Low": "priority-low",
+        "Medium": "priority-medium",
+        "High": "priority-high",
+        "Critical": "priority-critical"
+    };
+
+    return `
+        <span class="priority ${classes[priority] || ""}">
+            ${priority}
+        </span>
+    `;
+}
+async function loadTickets() {
+
+    const search = document.getElementById("search").value;
+    const category = document.getElementById("category").value;
+    const priority = document.getElementById("priority").value;
+    const status = document.getElementById("status").value;
+
+    const params = new URLSearchParams();
+
+    if (search) {
+        params.append("search", search);
+    }
+
+    if (category) {
+        params.append("category", category);
+    }
+
+    if (priority) {
+        params.append("priority", priority);
+    }
+
+    if (status) {
+        params.append("status", status);
+    }
+
+    const response = await fetch(
+        "/api/admin/tickets?" + params.toString()
+    );
+
+    const tickets = await response.json();
+
+    const body = document.getElementById("ticketBody");
+
+    body.innerHTML = "";
+
+    tickets.forEach(ticket => {
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${ticket.id}</td>
+            <td>${ticket.title}</td>
+            <td>${ticket.category}</td>
+            <td>${priorityBadge(ticket.priority)}</td>
+            <td>${statusBadge(ticket.status)}</td>
+            <td>${ticket.assigned_name || "Unassigned"}</td>
+            <td>
+                ${
+                    ticket.status === "Open" ||
+                    ticket.status === "Assigned" ||
+                    ticket.status === "In Progress"
+                    ?
+                    `<button onclick="assignTicket(${ticket.id})">
+                        ${ticket.status === "Open" ? "Assign" : "Reassign"}
+                    </button>`
+                    :
+                    `<span>—</span>`
+                }
+            </td>
+        `;
+
+        body.appendChild(row);
+    });
+}
+
+async function assignTicket(ticketId) {
+
+    const supportId = prompt(
+        "Enter Support Staff ID:"
+    );
+
+    if (!supportId) {
+        return;
+    }
+
+    const response = await fetch(
+        `/api/tickets/${ticketId}/assign`,
+        {
+            method: "PUT",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                assigned_to: parseInt(supportId)
+            })
+        }
+    );
+
+    const data = await response.json();
+
+    alert(data.message || data.error);
+
+    if (response.ok) {
+        loadTickets();
+    }
+}
+
+
+async function logout() {
+
+    await fetch("/api/logout", {
+        method: "POST"
+    });
+
+    window.location.href = "/login";
+}
+
+
+loadTickets();
+
+</script>
+
+</body>
+
+</html>

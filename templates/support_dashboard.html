@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Support Dashboard - IT Help Desk</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <h1>IT Help Desk</h1>
+
+    <h2>Support Dashboard</h2>
+
+    <button onclick="loadTickets()">
+        Refresh Tickets
+    </button>
+
+    <button onclick="logout()">
+        Logout
+    </button>
+
+    <h3>My Assigned Tickets</h3>
+
+    <table border="1" width="100%">
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody id="ticketBody">
+        </tbody>
+
+    </table>
+
+    <p id="message"></p>
+
+</div>
+
+
+<script>
+
+async function loadTickets() {
+
+    const response = await fetch("/api/assigned-tickets");
+
+    const data = await response.json();
+
+    const body = document.getElementById("ticketBody");
+
+    body.innerHTML = "";
+
+    if (!response.ok) {
+
+        document.getElementById("message").textContent =
+            data.error;
+
+        return;
+    }
+
+    if (data.length === 0) {
+
+        document.getElementById("message").textContent =
+            "No tickets are currently assigned to you.";
+
+        return;
+    }
+
+    document.getElementById("message").textContent = "";
+
+    data.forEach(ticket => {
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${ticket.id}</td>
+            <td>${ticket.title}</td>
+            <td>${ticket.category}</td>
+            <td>${ticket.priority}</td>
+            <td>${ticket.status}</td>
+            <td>${ticket.created_at}</td>
+            <td>
+                <button onclick="openTicket(${ticket.id})">
+                    View
+                </button>
+            </td>
+        `;
+
+        body.appendChild(row);
+
+    });
+}
+function openTicket(ticketId) {
+
+    window.location.href =
+        "/support-ticket/" + ticketId;
+}
+
+async function logout() {
+
+    await fetch("/api/logout", {
+        method: "POST"
+    });
+
+    window.location.href = "/login";
+}
+
+
+loadTickets();
+
+</script>
+
+</body>
+
+</html>

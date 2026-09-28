@@ -1,0 +1,372 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f4f6f9;
+    color: #1f2937;
+}
+
+/* ---------- LOGIN ---------- */
+
+.login-container {
+    width: 380px;
+    margin: 100px auto;
+    background: white;
+    padding: 35px;
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 7px;
+    margin-bottom: 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 7px;
+    background: #2563eb;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.login-container button:hover {
+    background: #1d4ed8;
+}
+
+/* ---------- DASHBOARD ---------- */
+
+.dashboard {
+    width: 92%;
+    max-width: 1250px;
+    margin: 35px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.dashboard-header h1 {
+    margin: 0;
+    font-size: 26px;
+}
+
+.dashboard-header p {
+    margin: 6px 0 0;
+    color: #6b7280;
+}
+
+/* ---------- BUTTONS ---------- */
+
+button {
+    border: none;
+    border-radius: 7px;
+    padding: 9px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    background: #2563eb;
+    color: white;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+.btn-secondary {
+    background: #6b7280;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+}
+
+.btn-danger {
+    background: #dc2626;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+}
+
+/* ---------- DASHBOARD CARDS ---------- */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    padding: 20px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+.stat-card h3 {
+    margin: 0;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.stat-card p {
+    margin: 8px 0 0;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+/* ---------- TABLE ---------- */
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th {
+    background: #f8fafc;
+    color: #374151;
+    font-weight: 600;
+    text-align: left;
+    padding: 13px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+td {
+    padding: 13px;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: middle;
+}
+
+tr:hover {
+    background: #f9fafb;
+}
+
+/* ---------- STATUS ---------- */
+
+.status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-open {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-assigned {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.status-progress {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-resolved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-closed {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+/* ---------- PRIORITY ---------- */
+
+.priority {
+    font-weight: 600;
+}
+
+.priority-low {
+    color: #16a34a;
+}
+
+.priority-medium {
+    color: #ca8a04;
+}
+
+.priority-high {
+    color: #ea580c;
+}
+
+.priority-critical {
+    color: #dc2626;
+}
+
+/* ---------- FILTERS ---------- */
+
+.filters {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filters input,
+.filters select {
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    background: white;
+}
+
+.filters input:focus,
+.filters select:focus,
+.dashboard input:focus,
+.dashboard textarea:focus,
+.dashboard select:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+/* ---------- FORMS ---------- */
+
+.dashboard label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+}
+
+.dashboard input,
+.dashboard textarea,
+.dashboard select {
+    width: 100%;
+    padding: 11px;
+    margin-top: 6px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    font-family: inherit;
+}
+
+.dashboard textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* ---------- ACTIONS ---------- */
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 900px) {
+
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filters {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .dashboard {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .filters {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}
+.status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-open {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-assigned {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.status-progress {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-resolved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-closed {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.priority {
+    font-weight: 600;
+}
+
+.priority-low {
+    color: #16a34a;
+}
+
+.priority-medium {
+    color: #ca8a04;
+}
+
+.priority-high {
+    color: #ea580c;
+}
+
+.priority-critical {
+    color: #dc2626;
+}

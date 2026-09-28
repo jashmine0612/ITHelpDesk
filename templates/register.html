@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IT Help Desk - Register</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <h2>Create Account</h2>
+
+        <p style="text-align: center; color: #6b7280;">
+            Register for the IT Help Desk
+        </p>
+
+        <form onsubmit="registerUser(event)">
+
+            <label for="name">
+                Name
+            </label>
+
+            <input
+                type="text"
+                id="name"
+                placeholder="Enter your name"
+                required
+            >
+
+            <label for="email">
+                Email
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                required
+            >
+
+            <label for="password">
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                required
+            >
+
+            <button type="submit">
+                Register
+            </button>
+
+        </form>
+
+        <p id="message"></p>
+
+        <p style="text-align: center; margin-top: 20px;">
+            Already have an account?
+            <a href="/login">Login</a>
+        </p>
+
+    </div>
+
+    <script>
+        async function registerUser(event) {
+
+            event.preventDefault();
+
+            const name =
+                document.getElementById("name").value.trim();
+
+            const email =
+                document.getElementById("email").value.trim();
+
+            const password =
+                document.getElementById("password").value;
+
+            const message =
+                document.getElementById("message");
+
+            message.textContent = "";
+
+            try {
+
+                const response = await fetch("/api/register", {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+
+                    message.textContent =
+                        "Registration successful! Redirecting to login...";
+
+                    setTimeout(() => {
+                        window.location.href = "/login";
+                    }, 1200);
+
+                } else {
+
+                    message.textContent =
+                        data.error || "Registration failed";
+                }
+
+            } catch (error) {
+
+                console.error("Registration error:", error);
+
+                message.textContent =
+                    "Unable to connect to the server.";
+            }
+        }
+    </script>
+
+</body>
+
+</html>

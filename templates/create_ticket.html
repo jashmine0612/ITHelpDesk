@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Create Ticket - IT Help Desk</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <h1>IT Help Desk</h1>
+
+    <h2>Create New Ticket</h2>
+
+    <form id="ticketForm">
+
+        <label>Problem Title</label>
+
+        <input
+            type="text"
+            id="title"
+            placeholder="Example: Wi-Fi is not working"
+            required
+        >
+
+
+        <label>Description</label>
+
+        <textarea
+            id="description"
+            placeholder="Describe your problem"
+            rows="5"
+            required
+        ></textarea>
+
+
+        <label>Category</label>
+
+        <select id="category" required>
+
+            <option value="">Select category</option>
+
+            <option value="Hardware">Hardware</option>
+
+            <option value="Software">Software</option>
+
+            <option value="Network">Network</option>
+
+            <option value="Account">Account</option>
+
+            <option value="Other">Other</option>
+
+        </select>
+
+
+        <label>Priority</label>
+
+        <select id="priority">
+
+            <option value="Low">Low</option>
+
+            <option value="Medium" selected>Medium</option>
+
+            <option value="High">High</option>
+
+            <option value="Critical">Critical</option>
+
+        </select>
+
+
+        <button type="submit">
+            Submit Ticket
+        </button>
+
+    </form>
+
+    <p id="message"></p>
+
+    <button onclick="window.location.href='/user-dashboard'">
+        Back to Dashboard
+    </button>
+
+</div>
+
+
+<script>
+
+document.getElementById("ticketForm").addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        const title =
+            document.getElementById("title").value;
+
+        const description =
+            document.getElementById("description").value;
+
+        const category =
+            document.getElementById("category").value;
+
+        const priority =
+            document.getElementById("priority").value;
+
+
+        const response = await fetch("/api/tickets", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                title: title,
+                description: description,
+                category: category,
+                priority: priority
+            })
+
+        });
+
+
+        const data = await response.json();
+
+
+        if (response.ok) {
+
+            document.getElementById("message").textContent =
+                "Ticket created successfully! Ticket ID: "
+                + data.ticket_id;
+
+            document.getElementById("ticketForm").reset();
+
+        }
+        else {
+
+            document.getElementById("message").textContent =
+                data.error;
+
+        }
+
+    });
+
+</script>
+
+</body>
+
+</html>
